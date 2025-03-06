@@ -59,10 +59,12 @@ public class Grupo {
 		nmatriculados+=n;
 	}
 	
+	@Override
 	public String toString() {
 		return "("+ codigo + " - "+actividad+" - " + tarifa + " euros "+ "- P:" + nplazas +" - M:" +nmatriculados+")";
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		boolean ok=false;
 		if (o instanceof Grupo) {
@@ -72,6 +74,7 @@ public class Grupo {
 		return ok;
 	}
 	
+	@Override
 	public int hashCode() {
 		return codigo.toUpperCase().hashCode()+actividad.toUpperCase().hashCode();
 	}

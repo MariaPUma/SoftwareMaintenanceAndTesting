@@ -95,35 +95,126 @@ public class ClubDeportivoAltoRendimientoTest {
         });
     }
 
-    // @Test
-    // @DisplayName("Test anyadirActividad correcto")
-    // public void anyadirActividadTest() throws Exception{
-    //     //Arrange
-    //     String nombre = "Club";
-    //     int maximo = 20;
-    //     double incremento = 10.0;
-    //     ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
-    //     String[] datos = {"G1", "Futbol", "10", "10", "10.0"};
+    @Test
+    @DisplayName("Test anyadirActividad correcto")
+    public void anyadirActividadTest() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+        String[] datos = {"G1", "Futbol", "10", "10", "10.0"};
 
-    //     //obtener longitud grupos antes 
-    //     Field gruposField = ClubDeportivo.class.getDeclaredField("grupos");
-    //     gruposField.setAccessible(true);
-    //     Grupo[] gruposAntes = (Grupo[]) gruposField.get(club);
-    //     int longitudPre = gruposAntes.length;
+        //obtener longitud grupos antes 
+        Field ngruposField = ClubDeportivo.class.getDeclaredField("ngrupos");
+        ngruposField.setAccessible(true);
+        int longitudPre = (int) ngruposField.get(club);
 
-    //     //Act
-    //     club.anyadirActividad(datos);
-    //     //Assert ESTA MAL
+        //Act
+        club.anyadirActividad(datos);
+        //Assert
 
-    //     Grupo[] gruposPost = (Grupo[]) gruposField.get(club);
-    //     int longitudPost = gruposPost.length;
+        int longitudPost = (int) ngruposField.get(club);
 
-    //     assertEquals(longitudPre + 1, longitudPost);
+        assertEquals(longitudPre + 1, longitudPost);
 
-    //     Field nombreField = ClubDeportivo.class.getDeclaredField("nombre");
-    //     nombreField.setAccessible(true);
-    //     assertEquals(incremento, nombreField.get(club));
+        Field nombreField = ClubDeportivo.class.getDeclaredField("nombre");
+        nombreField.setAccessible(true);
+        assertEquals(nombre, nombreField.get(club));
+    }
 
-    //     assertEquals("Futbol", gruposPost[0].getActividad());  
-    // }
+    @Test
+    @DisplayName("Test anyadirActividad con datos < 5")
+    public void anyadirActividadDatosTest() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+        String[] datos = {"G1", "Futbol", "10", "10"};
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
+    @Test
+    @DisplayName("Test anyadirActividad con plazas > maximo")
+    public void anyadirActividadPlazasTest() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+        String[] datos = {"G1", "Futbol", "30", "10", "10.0"};
+
+
+        //Act
+        club.anyadirActividad(datos);
+        //Assert
+
+        // Acceder al array de grupos con reflexión
+        Field gruposField = ClubDeportivo.class.getDeclaredField("grupos");
+        gruposField.setAccessible(true);
+        Grupo[] grupos = (Grupo[]) gruposField.get(club);
+
+        // Acceder al contador de grupos (ngrupos) para saber cuántos hay
+        Field ngruposField = ClubDeportivo.class.getDeclaredField("ngrupos");
+        ngruposField.setAccessible(true);
+        int ngrupos = (int) ngruposField.get(club);
+
+        // Obtener el último grupo añadido (en la posición ngrupos-1)
+        Grupo grupoAñadido = grupos[ngrupos - 1];
+
+        // Acceder a las plazas del grupo con reflexión (si no tiene getter)
+        Field plazasField = Grupo.class.getDeclaredField("nplazas");
+        plazasField.setAccessible(true);
+        int plazas = (int) plazasField.get(grupoAñadido);
+
+        // Assert - Verificar que las plazas son igual al máximo permitido (20)
+        assertEquals(maximo, plazas);
+    }
+
+    @Test
+    @DisplayName("Test anyadirActividad tipo numero incorrecto")
+    public void anyadirActividadNumeroIncorrectoTest() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+        String[] datos = {"G1", "Futbol", "10", "10.2", "10"};
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
+    @Test
+    @DisplayName("Test ingresos correcto")
+    public void ingresosTest() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+        String[] datos = {"G1", "Futbol", "10", "10", "10.0"};
+        club.anyadirActividad(datos);
+
+        //Act
+        double ingresos = club.ingresos();
+        //Assert
+        assertEquals(110.0, ingresos);
+    }
+
+    //Minitest para probar ClubException()
+    @Test
+    @DisplayName("Test ClubException")
+    public void clubExceptionTest() throws Exception{
+        assertThrows(ClubException.class, () -> {
+            throw new ClubException();
+        });
+    }
 }

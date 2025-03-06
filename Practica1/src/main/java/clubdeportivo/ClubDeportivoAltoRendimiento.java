@@ -25,6 +25,7 @@ public class ClubDeportivoAltoRendimiento extends ClubDeportivo{
 	
 	// El club de alto rendimiento tiene limitadas las plazas. Si el número de plazas que se recibe como parametro es mayor que el permitido, 
 	// se establece su valor al maximo permitido por grupo para el club.
+	@Override
 	public void anyadirActividad(String[] datos) throws ClubException {
 		if (datos.length<5) {
 			throw new ClubException ("ERROR: faltan datos");
@@ -44,6 +45,7 @@ public class ClubDeportivoAltoRendimiento extends ClubDeportivo{
 	}
 	
 	// Los ingresos del club tienen
+	@Override
 	public double ingresos() {
 		double cantidad = super.ingresos();
 		return cantidad+cantidad*(incremento/100);

@@ -98,6 +98,7 @@ public class ClubDeportivo {
 		return cantidad;
 	}
 
+	@Override
 	public String toString() {
 		StringJoiner sj = new StringJoiner(", ", "[ ", " ]");
 		int i = 0;
