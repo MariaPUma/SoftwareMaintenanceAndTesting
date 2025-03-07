@@ -48,9 +48,14 @@ public class ClubDeportivo {
 			throw new ClubException("ERROR: el grupo es nulo");
 		}
 		int pos = buscar(g);
-		if (pos == -1) { // El grupo es nuevo
-			grupos[ngrupos] = g;
-			ngrupos++;
+		if (pos == -1) { // El grupo es nuevo //MODIFICADO
+			if (ngrupos<grupos.length){
+				grupos[ngrupos] = g;
+				ngrupos++; 
+			}
+			else{ //No se pueden añadir más grupos al club
+				System.out.println("No caben más grupos en el club" + this.toString());
+			}
 		} else { // El grupo ya existe --> modificamos las plazas
 			grupos[pos].actualizarPlazas(g.getPlazas());
 		}
@@ -70,7 +75,7 @@ public class ClubDeportivo {
 
 	public void matricular(String actividad, int npersonas) throws ClubException {
 		int plazas = plazasLibres(actividad);
-		if (plazas < npersonas) { //Por qué
+		if (plazas < npersonas) { 
 			throw new ClubException("ERROR: no hay suficientes plazas libres para esa actividad en el club.");
 		}
 		int i = 0;
