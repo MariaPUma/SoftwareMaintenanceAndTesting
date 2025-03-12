@@ -9,13 +9,15 @@ import org.junit.jupiter.api.Test;
 
 public class ClubDeportivoAltoRendimientoTest {
     
+    //Constructor ClubDeportivoAltoRendimiento(nombre, maximo, incremento)
     @Test
-    @DisplayName("Test constructor correcto")
-    public void constructorTest() throws Exception{
+    @DisplayName("Constructor correctly instanciates a ClubDeportivoAltoRendimiento object")
+    public void ClubDeportivoAltoRendimiento_ValidParameters_CorrectlyInstanciated() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
         double incremento = 10.0;
+        //Act
         ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
         //Assert
         //El campo nombre del club deportivo se comprueba directamente en club deportivo
@@ -30,8 +32,8 @@ public class ClubDeportivoAltoRendimientoTest {
     }
     
     @Test
-    @DisplayName("Test constructor maximo negativo")
-    public void constructorMaximoNegativoTest() throws Exception{
+    @DisplayName("Constructor throws ClubException if the maximo is negative")
+    public void ClubDeportivoAltoRendimiento_MaximoNegative_CorrectlyInstanciated() throws Exception{
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento("Club", -1, 10.0);
@@ -39,22 +41,24 @@ public class ClubDeportivoAltoRendimientoTest {
     }
     
     @Test
-    @DisplayName("Test constructor incremento negativo")
-    public void constructorIncrementoNegativoTest() throws Exception{
+    @DisplayName("Constructor throws ClubException if the incremento is negative")
+    public void ClubDeportivoAltoRendimiento_IncrementoNegative_CorrectlyInstanciated() throws Exception{
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento("Club", 20, -10.0);
         });
     }
 
+    //Constructor ClubDeportivoAltoRendimiento(nombre, tam, maximo, incremento)
     @Test
-    @DisplayName("Test constructor con tamaño correcto")
-    public void constructorTamTest() throws Exception{
+    @DisplayName("Constructor correctly instanciates a ClubDeportivoAltoRendimiento object with tam")
+    public void constructor_ValidParametersWithTam_SetsFieldsCorrectly() throws Exception{
         //Arrange
         String nombre = "Club";
         int tam = 10;
         int maximo = 20;
         double incremento = 10.0;
+        //Act
         ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, tam, maximo, incremento);
         //Assert
         //El campo nombre del club deportivo se comprueba directamente en club deportivo
@@ -69,8 +73,8 @@ public class ClubDeportivoAltoRendimientoTest {
     }
 
     @Test
-    @DisplayName("Test constructor con tamaño negativo")
-    public void constructorTamNegativoTest() throws Exception{
+    @DisplayName("Constructor throws ClubException when tam is negative")
+    public void constructor_NegativeTam_ThrowsClubException() throws Exception {
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento("Club", -1, 20, 10.0);
@@ -78,26 +82,27 @@ public class ClubDeportivoAltoRendimientoTest {
     }
 
     @Test
-    @DisplayName("Test constructor con tamaño y maximo negativo")
-    public void constructorTamMaximoNegativoTest() throws Exception{
-        // Act & Assert
+    @DisplayName("Constructor throws ClubException when both tam and maximo are negative")
+    public void constructor_NegativeTamAndMaximo_ThrowsClubException() throws Exception {
+    // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento("Club", 5, -1, 10.0);
         });
     }
 
     @Test
-    @DisplayName("Test constructor con tamaño y incremento negativo")
-    public void constructorTamIncrementoNegativoTest() throws Exception{
+    @DisplayName("Constructor throws ClubException when tam and incremento are negative")
+    public void constructor_NegativeTamAndIncremento_ThrowsClubException() throws Exception {
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento("Club", 5, 20, -10.0);
         });
     }
 
+    //añadirActividad
     @Test
-    @DisplayName("Test anyadirActividad correcto")
-    public void anyadirActividadTest() throws Exception{
+    @DisplayName("anyadir actividad adds a new group and updates the group count")
+    public void anyadirActividad_ValidInput_IncrementsGroupCount() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
@@ -124,8 +129,8 @@ public class ClubDeportivoAltoRendimientoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad con datos < 5")
-    public void anyadirActividadDatosTest() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException when input data has fewer than 5 fields")
+    public void anyadirActividad_LessThanRequiredFields_ThrowsClubException() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
@@ -140,8 +145,8 @@ public class ClubDeportivoAltoRendimientoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad con plazas > maximo")
-    public void anyadirActividadPlazasTest() throws Exception{
+    @DisplayName("anyadirActividad caps the number of places to the maximum allowed when exceeding limit")
+    public void anyadirActividad_PlacesExceedingMax_CapsToMaximum() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
@@ -177,8 +182,8 @@ public class ClubDeportivoAltoRendimientoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad tipo numero incorrecto")
-    public void anyadirActividadNumeroIncorrectoTest() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException when a numeric input is invalid")
+    public void addActivity_InvalidNumericField_ThrowsClubException() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
@@ -192,9 +197,10 @@ public class ClubDeportivoAltoRendimientoTest {
         });
     }
 
+    //ingresos
     @Test
-    @DisplayName("Test ingresos correcto")
-    public void ingresosTest() throws Exception{
+    @DisplayName("ingresos returns the correct value")
+    public void ingresos_ReturnsCorrectValue() throws Exception{
         //Arrange
         String nombre = "Club";
         int maximo = 20;
@@ -209,10 +215,10 @@ public class ClubDeportivoAltoRendimientoTest {
         assertEquals(110.0, ingresos);
     }
 
-    //Minitest para probar ClubException()
+    //Minitest para probar ClubException() cuando no se pasa mensaje
     @Test
-    @DisplayName("Test ClubException")
-    public void clubExceptionTest() throws Exception{
+    @DisplayName("ClubException without a message is thrown correctly")
+    public void clubException_NoMessage_ThrowsClubException() throws Exception{
         assertThrows(ClubException.class, () -> {
             throw new ClubException();
         });

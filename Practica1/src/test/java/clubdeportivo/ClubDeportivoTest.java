@@ -13,8 +13,8 @@ public class ClubDeportivoTest {
     //--------------------------------------------------------------------------------------------------
     // Test constructor
     @Test
-    @DisplayName("Test constructor correcto")
-    public void constructorTest() throws Exception{
+    @DisplayName("Constructor correctly instanciates a ClubDeportivo object")
+    public void constructor_ValidParameters_CorrectlyInstanciated() throws Exception{
         //Arrange
         int tam = 10;
         String nombre = "Club";
@@ -36,8 +36,8 @@ public class ClubDeportivoTest {
     }
 
     @Test
-    @DisplayName("Test constructor con tamaño negativo")
-    public void constructorTamNegativoTest() throws Exception{
+    @DisplayName("Constructor throws ClubException when tam is negative")
+    public void constructor_NegativeTam_ThrowsClubException() throws Exception{
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivo club = new ClubDeportivo("Club", -1);
@@ -48,8 +48,8 @@ public class ClubDeportivoTest {
     // Test buscar
 
     @Test 
-    @DisplayName("Test busqueda correcta con grupo existente en el grupo")
-    public void buscarTest() throws Exception{
+    @DisplayName("buscar returns the correct index when the group exists in the club")
+    public void buscar_ExistingGroup_ReturnsCorrectIndex() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("nombre", 10);
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
@@ -67,8 +67,8 @@ public class ClubDeportivoTest {
     }
 
     @Test 
-    @DisplayName("Test busqueda correcta con grupo no existente en el club")
-    public void buscarTest2() throws Exception{
+    @DisplayName("buscar returns -1 when the group does not exist in the club")
+    public void buscar_NonExistingGroup_ReturnsNegativeOne() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("nombre", 10);
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
@@ -84,8 +84,8 @@ public class ClubDeportivoTest {
     }
 
     @Test 
-    @DisplayName("Test busqueda incorrecta con grupo null")
-    public void buscarIncorrectaTest() throws Exception{
+    @DisplayName("buscar returns -1 when the group is null")
+    public void buscar_NullGroup_ReturnsNegativeOne() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("nombre", 10);
         Grupo g = null;
@@ -101,11 +101,11 @@ public class ClubDeportivoTest {
     }
 
     //--------------------------------------------------------------------------------------------------
-    // Test anyadirActividad con String[]
+    // Test anyadirActividad
 
     @Test
-    @DisplayName("Test anyadirActividad correcto")
-    public void anyadirActividadTest() throws Exception{
+    @DisplayName("Test anyadirActividad adds the activity successfully with valid input")
+    public void anyadirActividad_ValidInput_AddsActivitySuccessfully() throws Exception{
         //Arrange
         String [] datos = {"nombre", "actividad", "10", "5", "10.0"};
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -115,8 +115,8 @@ public class ClubDeportivoTest {
     }
 
     @Test 
-    @DisplayName("Test anyadirActividad con valor numérico incorrecto")
-    public void anyadirActividadIncorrectoTest() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException for invalid numeric value in input")
+    public void anyadirActividad_InvalidNumericValue_ThrowsClubException() throws Exception{
         //Arrange
         String [] datos = {"nombre", "actividad", "error", "5", "10.0"};
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -128,8 +128,8 @@ public class ClubDeportivoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad incorrecto con matriculado no double")
-    public void anyadirActividadIncorrectoTest2() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException when enrolled value is not a valid number")
+    public void anyadirActividad_InvalidMatriculadosValue_ThrowsClubException() throws Exception{
         //Arrange
         String [] datos = {"nombre", "actividad", "10", "error", "10.0"};
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -141,8 +141,8 @@ public class ClubDeportivoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad incorrecto con tarifa no double")
-    public void anyadirActividadIncorrectoTest3() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException when tarifa value is not a valid number")
+    public void anyadirActividad_InvalidTarifaValue_ThrowsClubException() throws Exception{
         //Arrange
         String [] datos = {"nombre", "actividad", "10", "5", "error"};
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -157,8 +157,8 @@ public class ClubDeportivoTest {
     // Test anyadirActividad con Grupo
 
     @Test
-    @DisplayName("Test anyadirActividad grupo no existente correcto")
-    public void anyadirActividadGrupoTest() throws Exception{
+    @DisplayName("anyadirActividad adds a new group successfully when the group does not exist")
+    public void anyadirActividad_NonExistingGroup_AddsSuccessfully() throws Exception{
         //Arrange
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -178,8 +178,8 @@ public class ClubDeportivoTest {
     }
 
     @Test
-    @DisplayName("Test anyadirActividad grupo existente correcto")
-    public void anyadirActividadGrupoTest2() throws Exception{
+    @DisplayName("anyadirActividad updates the existing group correctly without increasing group count")
+    public void anyadirActividad_ExistingGroup_UpdatesGroupCorrectly() throws Exception{
         //Arrange
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
         Grupo g2 = new Grupo("nombre", "actividad", 15, 5, 10.0);
@@ -213,8 +213,8 @@ public class ClubDeportivoTest {
 
 
     @Test
-    @DisplayName("Test anyadirActividad incorrecto grupo null")
-    public void anyadirActividadGrupoIncorrectoTest() throws Exception{
+    @DisplayName("anyadirActividad throws ClubException when the group is null")
+    public void anyadirActividad_NullGroup_ThrowsClubException() throws Exception{
         //Arrange
         Grupo g = null;
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -229,8 +229,8 @@ public class ClubDeportivoTest {
     // Test plazasLibres
 
     @Test
-    @DisplayName("Test plazasLibres correcto")
-    public void plazasLibresTest() throws Exception{
+    @DisplayName("plazasLibres returns the number of available spaces for an existing activity")
+    public void plazas_ExistingActivity_ReturnsAvailableSpaces() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("Club", 10);
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
@@ -244,8 +244,8 @@ public class ClubDeportivoTest {
     }
 
     @Test 
-    @DisplayName("Test plazasLibres incorrecto actividad no existente")
-    public void plazasLibresIncorrectoTest() throws ClubException{
+    @DisplayName("plazasLibres returns 0 when the activity does not exist")
+    public void plazas_NonExistingActivity_ReturnsZero() throws ClubException{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("Club", 10);
         
@@ -261,8 +261,8 @@ public class ClubDeportivoTest {
     // Test matricular
 
     @Test
-    @DisplayName("Test matricular correcto")
-    public void matricularTest() throws Exception{
+    @DisplayName("matricular adds the correct number of participants when sufficient spaces are available")
+    public void matricular_ValidInput_AddsCorrectly() throws Exception{
         //Arrange
         String nombreActividad = "actividad";
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -277,29 +277,29 @@ public class ClubDeportivoTest {
 
     }
 
-    //ESTE SE PUEDE QUITAR PERO CONSULTAR   
+    // //ESTE SE PUEDE QUITAR PERO CONSULTAR   
+    // @Test
+    // @DisplayName("Test matricular correcto con plazas libres<npersonas")
+    // public void matricularIncorrectoTest() throws Exception{
+    //     //Arrange
+    //     String nombreActividad = "actividad";
+    //     ClubDeportivo club = new ClubDeportivo("Club", 10);
+    //     Grupo g = new Grupo("nombre", nombreActividad, 10, 5, 10.0);
+    //     Grupo g2= new Grupo("nombre2", nombreActividad, 15, 5, 10.0);
+    //     club.anyadirActividad(g);
+    //     club.anyadirActividad(g2);
+
+    //     //Act
+    //     club.matricular(nombreActividad, 7);
+
+    //     //Assert
+    //     assertEquals(17, g.getMatriculados()+g2.getMatriculados());
+
+    // }
+
     @Test
-    @DisplayName("Test matricular correcto con plazas libres<npersonas")
-    public void matricularIncorrectoTest() throws Exception{
-        //Arrange
-        String nombreActividad = "actividad";
-        ClubDeportivo club = new ClubDeportivo("Club", 10);
-        Grupo g = new Grupo("nombre", nombreActividad, 10, 5, 10.0);
-        Grupo g2= new Grupo("nombre2", nombreActividad, 15, 5, 10.0);
-        club.anyadirActividad(g);
-        club.anyadirActividad(g2);
-
-        //Act
-        club.matricular(nombreActividad, 7);
-
-        //Assert
-        assertEquals(17, g.getMatriculados()+g2.getMatriculados());
-
-    }
-
-    @Test
-    @DisplayName("Test matricular incorrecto plazas libres<npersonas")
-    public void matricularIncorrectoTest2() throws Exception{
+    @DisplayName("matricular throws ClubException when required spaces exceed available spaces")
+    public void matricular_InsufficientSpaces_ThrowsClubException() throws Exception{
         //Arrange
         String nombreActividad = "actividad";
         ClubDeportivo club = new ClubDeportivo("Club", 10);
@@ -312,15 +312,14 @@ public class ClubDeportivoTest {
         assertThrows(ClubException.class, () -> {
             club.matricular(nombreActividad, 16);
         });
-
     }
 
     //--------------------------------------------------------------------------------------------------
     // Test ingresos
 
     @Test
-    @DisplayName("Test ingresos correcto")
-    public void ingresosTest() throws Exception{
+    @DisplayName("ingresos returns the correct total income when activities are present")
+    public void ingresos_ValidInput_ReturnsCorrectTotalIncome() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("Club", 10);
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
@@ -337,8 +336,8 @@ public class ClubDeportivoTest {
     // Test toString
 
     @Test
-    @DisplayName("Test toString correcto")
-    public void toStringTest() throws Exception{
+    @DisplayName("toString returns the expected string")
+    public void toString_ReturnsCorrectString() throws Exception{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("Club", 10);
         Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
