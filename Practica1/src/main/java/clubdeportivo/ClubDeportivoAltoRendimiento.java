@@ -10,7 +10,7 @@ public class ClubDeportivoAltoRendimiento extends ClubDeportivo{
 		if (maximo<=0 || incremento<=0) {
 			throw new ClubException("ERRORES: valores 0 o negativos.");
 		}
-		maximoPersonasGrupo=maximo;
+		this.maximoPersonasGrupo=maximo;
 		this.incremento=incremento;
 	}
 	
@@ -26,7 +26,7 @@ public class ClubDeportivoAltoRendimiento extends ClubDeportivo{
 	// El club de alto rendimiento tiene limitadas las plazas. Si el número de plazas que se recibe como parametro es mayor que el permitido, 
 	// se establece su valor al maximo permitido por grupo para el club.
 	public void anyadirActividad(String[] datos) throws ClubException {
-		if (datos.length<5) {
+		if (datos == null || datos.length<5) {
 			throw new ClubException ("ERROR: faltan datos");
 		}
 		try {

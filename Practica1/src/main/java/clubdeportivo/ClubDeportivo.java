@@ -18,6 +18,7 @@ public class ClubDeportivo {
 		}
 		this.nombre = nombre;
 		grupos = new Grupo[n];
+		ngrupos = 0; //inicializar el número de grupos a 0
 	}
 
 	private int buscar(Grupo g) {
@@ -32,6 +33,10 @@ public class ClubDeportivo {
 	}
 
 	public void anyadirActividad(String[] datos) throws ClubException {
+		//Control datos no nulo
+		if (datos == null || datos.length == 0){
+			throw new ClubException("ERROR: se ha pasado un null o datos vacíos a anyadirActividad");
+		}
 		try {
 			int plazas = Integer.parseInt(datos[2]);
 			int matriculados = Integer.parseInt(datos[3]);
@@ -61,9 +66,12 @@ public class ClubDeportivo {
 		}
 	}
 
-	public int plazasLibres(String actividad) {
+	public int plazasLibres(String actividad) throws ClubException {
 		int p = 0;
 		int i = 0;
+		if (actividad == null) {
+			throw new ClubException("ERROR: plazasLibres recibe un null");
+		}
 		while (i < ngrupos) {
 			if (grupos[i].getActividad().equals(actividad)) {
 				p += grupos[i].plazasLibres();
