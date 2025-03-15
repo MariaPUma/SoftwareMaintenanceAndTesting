@@ -13,6 +13,9 @@ public class ClubDeportivo {
 	}
 
 	public ClubDeportivo(String nombre, int n) throws ClubException {
+		if(nombre == null || nombre.isEmpty()){
+			throw new ClubException("ERROR: el club no puede crearse con un nombre vacío o nulo");
+		}
 		if (n <= 0) {
 			throw new ClubException("ERROR: el club no puede crearse con un número de grupos 0 o negativo");
 		}
@@ -70,7 +73,7 @@ public class ClubDeportivo {
 		int p = 0;
 		int i = 0;
 		if (actividad == null) {
-			throw new ClubException("ERROR: plazasLibres recibe un null");
+			throw new ClubException("ERROR: plazasLibres recibe un null como actividad");
 		}
 		while (i < ngrupos) {
 			if (grupos[i].getActividad().equals(actividad)) {
