@@ -1,3 +1,12 @@
+//--------------------------------------------------------------------------------
+/* 
+ * INTEGRANTES DEL GRUPO:
+ * - Javier Toledo Delgado
+ * - María Paulina Ordóñez Walkowiak
+ */
+//--------------------------------------------------------------------------------
+
+
 package clubdeportivo;
 
 import java.lang.reflect.Field;
@@ -41,6 +50,33 @@ public class ClubDeportivoTest {
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             ClubDeportivo club = new ClubDeportivo("Club", -1);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException when tam is zero")
+    public void constructor_ZeroTam_ThrowsClubException() throws Exception{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            ClubDeportivo club = new ClubDeportivo("Club", 0);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException when name is null")
+    public void constructor_NullName_ThrowsClubException() throws Exception{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            ClubDeportivo club = new ClubDeportivo(null, 10);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException when name is empty")
+    public void constructor_EmptyName_ThrowsClubException() throws Exception{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            ClubDeportivo club = new ClubDeportivo("", 10);
         });
     }
 
@@ -153,6 +189,32 @@ public class ClubDeportivoTest {
         });
     }
 
+    @Test
+    @DisplayName("anyadirActividad throws ClubException when the datos is null")
+    public void anyadirActividad_NullDatos_ThrowsClubException() throws Exception{
+        //Arrange
+        String [] datos = null;
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
+    @Test
+    @DisplayName("anyadirActividad throws ClubException when the datos is empty")
+    public void anyadirActividad_EmptyDatos_ThrowsClubException() throws Exception{
+        //Arrange
+        String [] datos = {};
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
     //--------------------------------------------------------------------------------------------------
     // Test anyadirActividad con Grupo
 
@@ -225,6 +287,23 @@ public class ClubDeportivoTest {
         });
     }
 
+    @Test
+    @DisplayName("anyadirActividad throw ClubException when the club is full")
+    public void anyadirActividad_ClubFull_ReturnsMessage() throws Exception{
+        //Arrange
+        Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
+        Grupo g2 = new Grupo("nombre2", "actividad", 15, 5, 10.0);
+        ClubDeportivo club = new ClubDeportivo("Club", 1);
+
+        //Act
+        club.anyadirActividad(g);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(g2);
+        });
+    }
+
     //--------------------------------------------------------------------------------------------------
     // Test plazasLibres
 
@@ -248,13 +327,26 @@ public class ClubDeportivoTest {
     public void plazas_NonExistingActivity_ReturnsZero() throws ClubException{
         //Arrange
         ClubDeportivo club = new ClubDeportivo("Club", 10);
-        
+        Grupo g = new Grupo("nombre", "actividad", 10, 5, 10.0);
+        club.anyadirActividad(g);
 
         //Act
-        int plazas = club.plazasLibres("actividad");
+        int plazas = club.plazasLibres("noExiste");
 
         //Assert
         assertEquals(0, plazas);
+    }
+
+    @Test
+    @DisplayName("plazasLibres throws ClubException when the activity is null")
+    public void plazas_NullActivity_ThrowsClubException() throws Exception{
+        //Arrange
+        ClubDeportivo club = new ClubDeportivo("Club", 10);  
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.plazasLibres(null);
+        });
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -277,26 +369,6 @@ public class ClubDeportivoTest {
 
     }
 
-    // //ESTE SE PUEDE QUITAR PERO CONSULTAR   
-    // @Test
-    // @DisplayName("Test matricular correcto con plazas libres<npersonas")
-    // public void matricularIncorrectoTest() throws Exception{
-    //     //Arrange
-    //     String nombreActividad = "actividad";
-    //     ClubDeportivo club = new ClubDeportivo("Club", 10);
-    //     Grupo g = new Grupo("nombre", nombreActividad, 10, 5, 10.0);
-    //     Grupo g2= new Grupo("nombre2", nombreActividad, 15, 5, 10.0);
-    //     club.anyadirActividad(g);
-    //     club.anyadirActividad(g2);
-
-    //     //Act
-    //     club.matricular(nombreActividad, 7);
-
-    //     //Assert
-    //     assertEquals(17, g.getMatriculados()+g2.getMatriculados());
-
-    // }
-
     @Test
     @DisplayName("matricular throws ClubException when required spaces exceed available spaces")
     public void matricular_InsufficientSpaces_ThrowsClubException() throws Exception{
@@ -313,6 +385,79 @@ public class ClubDeportivoTest {
             club.matricular(nombreActividad, 16);
         });
     }
+
+    @Test
+    @DisplayName("matricular adds the correct number of participants when npersonas < plazasGrupo")
+    public void matricular_LessThanPlazasGrupo_AddsCorrectly() throws Exception{
+        //Arrange
+        String nombreActividad = "actividad";
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+        Grupo g = new Grupo("nombre", nombreActividad, 10, 0, 10.0);
+        club.anyadirActividad(g);
+
+        //Act
+        club.matricular(nombreActividad, 3);
+
+        //Assert
+        assertEquals(3, g.getMatriculados());
+    }
+
+    @Test
+    @DisplayName("matricular does nothing if actividad is not found")
+    public void matricular_NonExistingActivity_DoesNothing() throws Exception{
+        //Arrange
+        String nombreActividad = "actividad";
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+        Grupo g = new Grupo("nombre", nombreActividad, 10, 10, 10.0);
+        club.anyadirActividad(g);
+
+        //Act
+        club.matricular("noExiste", 3);
+
+        //Assert
+        assertEquals(10, g.getMatriculados());
+    }
+
+    @Test
+    @DisplayName("matricular does nothing if npersonas is 0")
+    public void matricular_ZeroNPersonas_DoesNothing() throws Exception{
+        //Arrange
+        String nombreActividad = "actividad";
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+        Grupo g = new Grupo("nombre", nombreActividad, 10, 10, 10.0);
+        club.anyadirActividad(g);
+
+        //Act
+        club.matricular(nombreActividad, 0);
+
+        //Assert
+        assertEquals(10, g.getMatriculados());
+    }
+
+    @Test
+    @DisplayName("matricular throws ClubException when actividad is null")
+    public void matricular_NullActividad_ThrowsClubException() throws Exception{
+        //Arrange
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.matricular(null, 5);
+        });
+    }
+
+    @Test
+    @DisplayName("matricular throws ClubException when npersonas is negative")
+    public void matricular_NegativeNPersonas_ThrowsClubException() throws Exception{
+        //Arrange
+        ClubDeportivo club = new ClubDeportivo("Club", 10);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.matricular("actividad", -5);
+        });
+    }
+
 
     //--------------------------------------------------------------------------------------------------
     // Test ingresos

@@ -1,3 +1,12 @@
+//--------------------------------------------------------------------------------
+/* 
+ * INTEGRANTES DEL GRUPO:
+ * - Javier Toledo Delgado
+ * - María Paulina Ordóñez Walkowiak
+ */
+//--------------------------------------------------------------------------------
+
+
 package clubdeportivo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,6 +65,42 @@ public class GrupoTest {
         // Act & Assert
         assertThrows(ClubException.class, () -> {
             Grupo grupo = new Grupo("G1", "Futbol", 10, 20, 10.0);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException if codigo is null")
+    public void Grupo_codigoNull_ReturnsClubException() throws ClubException{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            Grupo grupo = new Grupo(null, "Futbol", 20, 10, 10.0);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException if codigo is empty")
+    public void Grupo_codigoEmpty_ReturnsClubException() throws ClubException{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            Grupo grupo = new Grupo("", "Futbol", 20, 10, 10.0);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException if actividad is null")
+    public void Grupo_actividadNull_ReturnsClubException() throws ClubException{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            Grupo grupo = new Grupo("G1", null, 20, 10, 10.0);
+        });
+    }
+
+    @Test
+    @DisplayName("Constructor throws ClubException if actividad is empty")
+    public void Grupo_actividadEmpty_ReturnsClubException() throws ClubException{
+        // Act & Assert
+        assertThrows(ClubException.class, () -> {
+            Grupo grupo = new Grupo("G1", "", 20, 10, 10.0);
         });
     }
 

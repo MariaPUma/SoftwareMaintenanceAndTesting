@@ -1,3 +1,12 @@
+//--------------------------------------------------------------------------------
+/* 
+ * INTEGRANTES DEL GRUPO:
+ * - Javier Toledo Delgado
+ * - María Paulina Ordóñez Walkowiak
+ */
+//--------------------------------------------------------------------------------
+
+
 package clubdeportivo;
 
 import java.lang.reflect.Field;
@@ -190,6 +199,38 @@ public class ClubDeportivoAltoRendimientoTest {
         double incremento = 10.0;
         ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
         String[] datos = {"G1", "Futbol", "10", "10.2", "10"};
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
+    @Test
+    @DisplayName("anyadirActividad throws ClubException when datos is null")
+    public void anyadirActividad_NullData_ThrowsClubException() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        String datos[] = null;
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
+
+        //Act & Assert
+        assertThrows(ClubException.class, () -> {
+            club.anyadirActividad(datos);
+        });
+    }
+
+    @Test
+    @DisplayName("anyadirActividad throws ClubException when datos is empty")
+    public void anyadirActividad_EmptyData_ThrowsClubException() throws Exception{
+        //Arrange
+        String nombre = "Club";
+        int maximo = 20;
+        double incremento = 10.0;
+        String[] datos = {};
+        ClubDeportivoAltoRendimiento club = new ClubDeportivoAltoRendimiento(nombre, maximo, incremento);
 
         //Act & Assert
         assertThrows(ClubException.class, () -> {
