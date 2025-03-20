@@ -39,33 +39,44 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
 
     @Override
     public void insert(T value) {
+        if (this.contains(value)){
+            throw new BinarySearchTreeException("ERROR: value already exists in the tree");
+        }
+
         if (this.value == null) {
             this.value = value;
-        } else {
-            if (comparator.compare(value, this.value) < 0) {
-                if (left == null) {
-                    left = new BinarySearchTree<>(comparator);
-                }
-                left.insert(value);
-            } else if (comparator.compare(value, this.value) > 0) {
-                if (right == null) {
-                    right = new BinarySearchTree<>(comparator);
-                }
-                right.insert(value);
+        } 
+        else if (comparator.compare(value, this.value) < 0) {
+            if (left == null) {
+                left = new BinarySearchTree<>(comparator);
             }
-        }
+            left.insert(value);
+        } 
+        else { //comparator.compare(value, this.value) > 0) 
+            if (right == null) {
+                right = new BinarySearchTree<>(comparator);
+            }
+            right.insert(value);
+        } 
     }
 
     @Override
     public boolean isLeaf() {
+        if (this.value == null) {
+            throw new BinarySearchTreeException("ERROR: tree is empty");
+        } 
         return this.left == null && this.right == null;
     }
 
     @Override
     public boolean contains(T value) {
-        if (this.value == value){
+        if (this.value == null) {
+            return false;
+        }
+        else if (comparator.compare(value, this.value) == 0){
             return true;
-        } else {
+        } 
+        else {
             if (this.left != null && comparator.compare(value, this.value) < 0){
                 return this.left.contains(value);
             }
@@ -78,32 +89,76 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
 
     @Override
     public T minimum() {
-        // TODO
-        return null;
+        if (this.value == null) {
+            throw new BinarySearchTreeException("ERROR: tree is empty");
+        } 
+        if (this.left == null){
+            return this.value;
+        }
+        return this.left.minimum();
     }
 
     @Override
     public T maximum() {
-        // TODO
-        return null;
+        if (this.value == null) {
+            throw new BinarySearchTreeException("ERROR: tree is empty");
+        } 
+        if (this.right == null){
+            return this.value;
+        }
+        return this.right.maximum();
     }
 
     @Override
-    public void removeBranch(T value){
-        // TODO
+    public void removeBranch(T value) {
+        if (!this.contains(value)) {
+            throw new BinarySearchTreeException("ERROR: value not found trying to remove branch");
+        }
+    
+        if (comparator.compare(value, this.value) == 0) {
+            this.value = null;
+            this.left = null;
+            this.right = null;
+        } 
+        else if (comparator.compare(value, this.value) < 0) {
+            if (this.left != null && comparator.compare(value, this.left.value) == 0) {
+                this.left = null;
+            } else {
+                this.left.removeBranch(value);
+            }
+        } 
+        else { // comparator.compare(value, this.value) > 0
+            if (this.right != null && comparator.compare(value, this.right.value) == 0) {
+                this.right = null; 
+            } else {
+                this.right.removeBranch(value);
+            }
+        }
     }
+    
 
     @Override
     public int size() {
-        //TODO
-        return 0;
+        if (this.value == null) {
+            return 0; // Un árbol vacío tiene tamaño 0
+        }
+        int leftSize = (this.left == null) ? 0 : this.left.size();
+        int rightSize = (this.right == null) ? 0 : this.right.size();
+        return 1 + leftSize + rightSize;
     }
 
     @Override
     public int depth() {
-        // TODO
-        return 0;
+        if (this.value == null) {
+            return 0; // Si el nodo no tiene valor, el árbol está vacío
+        }
+    
+        int leftDepth = (this.left == null) ? 0 : this.left.depth();
+        int rightDepth = (this.right == null) ? 0 : this.right.depth();
+    
+        return 1 + Math.max(leftDepth, rightDepth);
     }
+    
 
     // Complex operations
     // (Estas operaciones se incluirán más adelante para ser realizadas en la segunda
