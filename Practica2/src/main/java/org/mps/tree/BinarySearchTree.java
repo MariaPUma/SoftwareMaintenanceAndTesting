@@ -31,6 +31,10 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
     }
 
     public BinarySearchTree(Comparator<T> comparator) {
+        if(comparator == null){
+            throw new BinarySearchTreeException("ERROR: comparator is null");
+        }
+
         this.comparator = comparator;
         this.left = null;
         this.right = null;
@@ -39,6 +43,10 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
 
     @Override
     public void insert(T value) {
+        if (value == null){
+            throw new BinarySearchTreeException("ERROR: value is null");
+        }
+
         if (this.contains(value)){
             throw new BinarySearchTreeException("ERROR: value already exists in the tree");
         }
@@ -111,6 +119,10 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
 
     @Override
     public void removeBranch(T value) {
+        if (value == null) {
+            throw new BinarySearchTreeException("ERROR: value is null");
+        }
+        
         if (!this.contains(value)) {
             throw new BinarySearchTreeException("ERROR: value not found trying to remove branch");
         }
@@ -119,7 +131,8 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
             this.value = null;
             this.left = null;
             this.right = null;
-        } 
+        }
+
         else if (comparator.compare(value, this.value) < 0) {
             if (this.left != null && comparator.compare(value, this.left.value) == 0) {
                 this.left = null;

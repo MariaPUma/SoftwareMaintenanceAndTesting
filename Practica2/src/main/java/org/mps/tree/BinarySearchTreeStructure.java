@@ -1,7 +1,5 @@
 package org.mps.tree;
 
-import java.util.List;
-
 /**
  * A binary search tree is a binary tree in which each node has a value and two subtrees, and for each node
  * all elements in the left subtree are less than the node value, and all elements in the right
