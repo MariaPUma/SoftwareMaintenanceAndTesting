@@ -506,16 +506,16 @@ public class BinarySearchTreeTest {
         }
     
 
-        @Test 
-        @DisplayName("removeBranch throws exception when the value is not in the tree")
-        public void removeBranch_valueNotInTree_throwsException(){
-            //Arrange
-            tree.insert(5);
-            //Act & Assert
-            assertThrows(BinarySearchTreeException.class, () -> {
-                tree.removeBranch(10);
-            });
-        }
+        // @Test 
+        // @DisplayName("removeBranch throws exception when the value is not in the tree")
+        // public void removeBranch_valueNotInTree_throwsException(){
+        //     //Arrange
+        //     tree.insert(5);
+        //     //Act & Assert
+        //     assertThrows(BinarySearchTreeException.class, () -> {
+        //         tree.removeBranch(10);
+        //     });
+        // }
     
         @Test
         @DisplayName("removeBranch removes the root of a single-node tree")
@@ -554,17 +554,17 @@ public class BinarySearchTreeTest {
             assertFalse(tree.contains(3));
         }
 
-        @Test
-        @DisplayName("removeBranch non-existing value smaller than root, throws exception")
-        public void removeBranch_nonExistingValueSmallerThanRoot_throwsException() {
-            // Arrange
-            tree.insert(10);
-            tree.insert(5);
-            // Act & Assert
-            assertThrows(BinarySearchTreeException.class, () -> {
-                tree.removeBranch(3);
-            });
-        }
+        // @Test
+        // @DisplayName("removeBranch non-existing value smaller than root, throws exception")
+        // public void removeBranch_nonExistingValueSmallerThanRoot_throwsException() {
+        //     // Arrange
+        //     tree.insert(10);
+        //     tree.insert(5);
+        //     // Act & Assert
+        //     assertThrows(BinarySearchTreeException.class, () -> {
+        //         tree.removeBranch(3);
+        //     });
+        // }
 
         @Test
         @DisplayName("removeBranch existing value bigger than root, removes right branch of a tree")
@@ -602,6 +602,17 @@ public class BinarySearchTreeTest {
             tree.removeBranch(20);
             // Assert
             assertFalse(tree.contains(20));
+        }
+
+        @Test
+        @DisplayName("")
+        public void test(){
+            //Arrange
+            tree.insert(10);
+            //Act
+            tree.removeBranch(5);
+            //Assert
+            assertFalse(tree.contains(5));
         }
     }
 

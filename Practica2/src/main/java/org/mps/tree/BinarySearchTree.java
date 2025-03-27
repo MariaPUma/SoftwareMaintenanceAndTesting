@@ -1,6 +1,8 @@
 package org.mps.tree;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
     private Comparator<T> comparator;
@@ -123,9 +125,9 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
             throw new BinarySearchTreeException("ERROR: value is null");
         }
         
-        if (!this.contains(value)) {
-            throw new BinarySearchTreeException("ERROR: value not found trying to remove branch");
-        }
+        // if (!this.contains(value)) {
+        //     throw new BinarySearchTreeException("ERROR: value not found trying to remove branch");
+        // }
     
         if (comparator.compare(value, this.value) == 0) {
             this.value = null;
@@ -134,18 +136,22 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
         }
 
         else if (comparator.compare(value, this.value) < 0) {
-            if (this.left != null && comparator.compare(value, this.left.value) == 0) {
-                this.left = null;
-            } else {
-                this.left.removeBranch(value);
-            }
+            if (this.left != null) {
+                if (comparator.compare(value, this.left.value) == 0){
+                    this.left = null;
+                } else {
+                    this.left.removeBranch(value);
+                }
+            } 
         } 
         else { // comparator.compare(value, this.value) > 0
-            if (this.right != null && comparator.compare(value, this.right.value) == 0) {
-                this.right = null; 
-            } else {
-                this.right.removeBranch(value);
-            }
+            if (this.right != null) {
+                if (comparator.compare(value, this.right.value) == 0){
+                    this.right = null;
+                } else {
+                    this.right.removeBranch(value);
+                }
+            } 
         }
     }
     
@@ -172,8 +178,74 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
         return 1 + Math.max(leftDepth, rightDepth);
     }
     
-
     // Complex operations
-    // (Estas operaciones se incluirán más adelante para ser realizadas en la segunda
-    // sesión de laboratorio de esta práctica)
+
+    @Override
+    public void removeValue(T value) {
+        // if(value!=null || !this.contains(value)){
+        //     throw new BinarySearchTreeException("ERROR: value not valid");
+        // }
+        
+        if (comparator.compare(value, this.value) == 0) {
+            if (this.isLeaf()) {
+                this.value = null;
+            } else if (this.right != null) {
+                T rightMinimum = this.right.minimum();
+                this.removeValue(rightMinimum);
+                this.value = rightMinimum;
+            } else { // Solo tiene hijo izquierdo
+                this.value = this.left.value;
+                this.right = this.left.right;
+                this.left = this.left.left;
+            } 
+        } else if(comparator.compare(value, this.value) < 0){
+            if (comparator.compare(value, this.left.value) == 0 && this.left.isLeaf()) {
+                this.left = null; // Si el hijo izquierdo es el nodo a eliminar y es hoja, lo eliminamos
+            } else {
+                this.left.removeValue(value);
+            }
+        }else{ //comparator.compare(value, this.value) > 0
+            if (comparator.compare(value, this.right.value) == 0 && this.right.isLeaf()){
+                this.right = null;
+            }else {
+               this.right.removeValue(value); 
+            }
+        }
+        
+        
+    }
+
+    @Override
+    public List<T> inOrder() {
+        List<T> orderedItems = new ArrayList<>();
+         
+        if (this.left != null) orderedItems.addAll(this.left.inOrder());
+        orderedItems.add(this.value);
+        if (this.right != null) orderedItems.addAll(this.right.inOrder());
+
+        return orderedItems;
+    }
+
+    @Override
+    public void balance() {
+        List<T> orden = this.inOrder();
+        
+        this.value = null;
+        this.left = null;
+        this.right = null;
+    
+        insertarBalanceado(orden, 0, orden.size() - 1);
+    }
+    
+    private void insertarBalanceado(List<T> lista, int inicio, int fin) {
+        if (inicio > fin) {
+            return;
+        }
+    
+        int mitad = (inicio + fin) / 2;
+        this.insert(lista.get(mitad));
+    
+        insertarBalanceado(lista, inicio, mitad - 1);
+        insertarBalanceado(lista, mitad + 1, fin);
+    }
 }

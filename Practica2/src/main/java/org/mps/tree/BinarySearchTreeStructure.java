@@ -1,5 +1,7 @@
 package org.mps.tree;
 
+import java.util.List;
+
 /**
  * A binary search tree is a binary tree in which each node has a value and two subtrees, and for each node
  * all elements in the left subtree are less than the node value, and all elements in the right
@@ -73,6 +75,10 @@ public interface BinarySearchTreeStructure<T> {
     int depth();
 
     // Complex operations
-    // (Estas operaciones se incluirán más adelante para ser realizadas en la segunda
-    // sesión de laboratorio de esta práctica)
+
+    void removeValue(T value);
+
+    List<T> inOrder();
+    
+    void balance();
 }

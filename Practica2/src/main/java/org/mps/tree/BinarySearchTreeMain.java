@@ -19,16 +19,23 @@ public class BinarySearchTreeMain {
         arbol.insert(3);
         arbol.insert(7);
         arbol.insert(2);
+        arbol.insert(4);
         arbol.insert(1);
+        //arbol.insert(9);
         info(arbol);
-        if (arbol.contains(3)) System.out.println("Contiene 3"); //string para probar el contains
-        arbol.removeBranch(3);
+        arbol.balance();
         info(arbol);
-        if (!arbol.contains(3)) System.out.println("No contiene 3"); //string para probar el contains     
+        //arbol.removeValue(5);
+        //info(arbol);
+        // if (arbol.contains(3)) System.out.println("Contiene 3"); //string para probar el contains
+        // arbol.removeBranch(3);
+        // info(arbol);
+        // if (!arbol.contains(3)) System.out.println("No contiene 3"); //string para probar el contains     
     }
         
     public static void info(BinarySearchTree<Integer> arbol){
         System.out.println("Tam: " + arbol.size() + ", max; " + arbol.maximum() + ", min: " + arbol.minimum() + ", depth: " + arbol.depth());
         System.out.println("Arbol: " + arbol.render());
+        System.out.println("En orden: " + arbol.inOrder());
     }
 }
