@@ -15,17 +15,19 @@ public class BinarySearchTreeMain {
         };
     
         BinarySearchTree<Integer> arbol = new BinarySearchTree<>(comparator);
-        arbol.insert(5);
-        arbol.insert(3);
-        arbol.insert(7);
-        arbol.insert(2);
-        arbol.insert(4);
-        arbol.insert(1);
-        //arbol.insert(9);
+        arbol.insert(60);
+        arbol.insert(50);
+        arbol.insert(40);
+        arbol.insert(30);
+        arbol.insert(20);
+        arbol.insert(10);
         info(arbol);
         arbol.balance();
         info(arbol);
-        //arbol.removeValue(5);
+
+
+
+
         //info(arbol);
         // if (arbol.contains(3)) System.out.println("Contiene 3"); //string para probar el contains
         // arbol.removeBranch(3);

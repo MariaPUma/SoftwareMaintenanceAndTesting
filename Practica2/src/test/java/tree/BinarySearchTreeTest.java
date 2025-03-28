@@ -1,5 +1,7 @@
 package tree;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -301,45 +303,8 @@ public class BinarySearchTreeTest {
         public void Contains_NullValue_ThrowsException(){
             //Act & Assert
             assertFalse(tree.contains(null));
-        }
-
-        // NO haría falta estos tests porque ya se comprueba en los anteriores
-
-        // @Test
-        // @DisplayName("contains return false when the tree has left branch and the value is not in the tree and smaller than the root")
-        // public void Contains_NotExistingValueInLeftBranch_ReturnValue(){
-        //     //Arrange
-        //     tree.insert(5);
-        //     tree.insert(3);
-        //     //Act
-        //     boolean result = tree.contains(1);
-        //     //Assert
-        //     assertTrue(result);
-        // }
-
-        // @Test
-        // @DisplayName("contains return false when the tree has right branch and the value is not in the tree and bigger than the root")
-        // public void Contains_NotExistingValueInRightBranch_ReturnValue(){
-        //     //Arrange
-        //     tree.insert(5);
-        //     tree.insert(10);
-        //     //Act
-        //     boolean result = tree.contains(15);
-        //     //Assert
-        //     assertTrue(result);
-        // }
-
-        
+        }       
     }
-    
-        
-
-    
-    
-    
-    
-    
-
 
     @Nested
     @DisplayName("maximum function tests")
@@ -506,16 +471,17 @@ public class BinarySearchTreeTest {
         }
     
 
-        // @Test 
-        // @DisplayName("removeBranch throws exception when the value is not in the tree")
-        // public void removeBranch_valueNotInTree_throwsException(){
-        //     //Arrange
-        //     tree.insert(5);
-        //     //Act & Assert
-        //     assertThrows(BinarySearchTreeException.class, () -> {
-        //         tree.removeBranch(10);
-        //     });
-        // }
+        @Test 
+        @DisplayName("removeBranch does nothing when the value is not in the tree")
+        public void removeBranch_valueNotInTree_doesNothing(){
+            //Arrange
+            tree.insert(5);
+            String arbolExpected = tree.render();
+            //Act 
+            tree.removeBranch(10);
+            //Arrange
+            assertEquals(arbolExpected, tree.render());
+        }
     
         @Test
         @DisplayName("removeBranch removes the root of a single-node tree")
@@ -553,18 +519,6 @@ public class BinarySearchTreeTest {
             // Assert
             assertFalse(tree.contains(3));
         }
-
-        // @Test
-        // @DisplayName("removeBranch non-existing value smaller than root, throws exception")
-        // public void removeBranch_nonExistingValueSmallerThanRoot_throwsException() {
-        //     // Arrange
-        //     tree.insert(10);
-        //     tree.insert(5);
-        //     // Act & Assert
-        //     assertThrows(BinarySearchTreeException.class, () -> {
-        //         tree.removeBranch(3);
-        //     });
-        // }
 
         @Test
         @DisplayName("removeBranch existing value bigger than root, removes right branch of a tree")
@@ -669,6 +623,7 @@ public class BinarySearchTreeTest {
         }
     }
 
+
     @Nested
     @DisplayName("depth function tests")
     class depth{
@@ -717,6 +672,320 @@ public class BinarySearchTreeTest {
             int depth = tree.depth();
             // Assert
             assertEquals(2, depth);
+        }
+    }
+
+
+    // REMOVEVALUE TESTS
+    @Nested
+    @DisplayName("removeValue function tests")
+    class removeValue{
+
+
+        @Test
+        @DisplayName("removeValue given a null value")
+        public void removeValue_NullValue_ThrowsException() {
+            // Act & Assert
+            assertThrows(BinarySearchTreeException.class, () -> {
+                tree.removeValue(null);
+            });
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is the root and leaf")
+        public void removeValue_ValueIsRootIsLeaf_RemovesValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            // Act
+            tree.removeValue(10);
+            // Assert
+            assertFalse(tree.contains(10));
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is the root")
+        public void removeValue_ValueIsRoot_RemoveValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(11);
+            tree.insert(12);
+            // Act
+            tree.removeValue(10);
+            // Assert
+            assertFalse(tree.contains(10));
+            assertTrue(tree.contains(4));
+            assertTrue(tree.contains(5));
+            assertTrue(tree.contains(11));
+            assertTrue(tree.contains(12));
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is not the root, isLeaf in the left branch")
+        public void removeValue_ValueIsNotRoot_RemoveValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(3);
+            tree.insert(11);
+
+            // Act
+            tree.removeValue(3);
+            // Assert
+            assertFalse(tree.contains(3));
+            assertTrue(tree.contains(4));
+            assertTrue(tree.contains(10));
+            assertTrue(tree.contains(11));
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is not the root, isLeaf in the right branch")
+        public void removeValue_ValueIsNotRootInTheRightBranch_RemoveValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(11);
+            tree.insert(12);
+
+            // Act
+            tree.removeValue(12);
+            // Assert
+            assertFalse(tree.contains(12));
+            assertTrue(tree.contains(4));
+            assertTrue(tree.contains(10));
+            assertTrue(tree.contains(11));
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is not the root, not isLeaf in the left branch")
+        public void removeValue_ValueIsNotRootInTheLeftBranch_RemoveValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(3);
+
+            // Act
+            tree.removeValue(4);
+            // Assert
+            assertFalse(tree.contains(4));
+            assertTrue(tree.contains(3));
+            assertTrue(tree.contains(5));
+            assertTrue(tree.contains(10));
+
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is not the root, not isLeaf in the left branch, has one children in the left")
+        public void removeValue_ValueIsNotRootInTheLeftBranchWithOneChildren_RemoveValueFromTree() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(3);
+            tree.insert(2);
+
+            // Act
+            tree.removeValue(3);
+            // Assert
+            assertFalse(tree.contains(3));
+            assertTrue(tree.contains(4));
+            assertTrue(tree.contains(5));
+            assertTrue(tree.contains(2));
+            assertTrue(tree.contains(10));
+        }
+
+        @Test
+        @DisplayName("removeValue given a value that is in the tree and is not the root, not isLeaf in the right branch")
+        public void removeValue_ValueIsNotRootNotLeafInTheRightBranch_RemoveValueFromTree(){
+            // Arrange
+            tree.insert(10);
+            tree.insert(4);
+            tree.insert(11);
+            tree.insert(12);
+            tree.insert(13);
+
+            // Act
+            tree.removeValue(11);
+            // Assert
+            assertFalse(tree.contains(11));
+            assertTrue(tree.contains(12));
+            assertTrue(tree.contains(13));
+            assertTrue(tree.contains(10));
+            assertTrue(tree.contains(4));
+        }
+
+        
+
+        @Test
+        @DisplayName("removeValue given a value that is not in the tree")
+        public void removeValue_ValueIsNotInTree_DoNothing() {
+            // Arrange
+            tree.insert(10);
+
+            // Act && Assert
+            assertThrows(BinarySearchTreeException.class, () -> {
+                tree.removeValue(5);
+            });
+           
+        }
+
+
+
+        
+    }
+    
+
+    @Nested
+    @DisplayName("inOrder tests")
+    class inOrder{
+        @Test
+        @DisplayName("inOrder of an empty tree returns an empty list")
+        public void inOrder_EmptyTree_RetunrnsEmptyList(){;
+            //Act & Assert
+            assertTrue(tree.inOrder().isEmpty());
+        }
+
+        @Test
+        @DisplayName("inOrder of a single-node tree returns a list with only that node")
+        public void inOrder_singleNodeTree_returnsSingleElement() {
+            // Arrange
+            tree.insert(10);
+            
+            // Act & Assert
+            assertEquals(List.of(10), tree.inOrder());
+        }
+
+        @Test
+        @DisplayName("inOrder of a left-skewed tree")
+        public void inOrder_leftSkewedTree_returnsSortedOrder() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(5);
+            tree.insert(2);
+            
+            // Act & Assert
+            assertEquals(List.of(2, 5, 10), tree.inOrder());
+        }
+
+        @Test
+        @DisplayName("inOrder of a right-skewed tree")
+        public void inOrder_rightSkewedTree_returnsSortedOrder() {
+            // Arrange
+            tree.insert(10);
+            tree.insert(15);
+            tree.insert(20);
+            
+            // Act & Assert
+            assertEquals(List.of(10, 15, 20), tree.inOrder());
+        }
+
+        @Test
+        @DisplayName("In-order traversal of a balanced tree")
+        public void inOrder_balancedTree_returnsSortedOrder() {
+            // Arrange
+            tree.insert(12);
+            tree.insert(15);
+            tree.insert(20);
+            tree.insert(2);
+            tree.insert(5);
+            tree.insert(7);
+            tree.insert(10);
+            //tree.balance();
+            
+            // Act
+            List<Integer> result = tree.inOrder();
+            
+            // Assert
+            assertEquals(List.of(2, 5, 7, 10, 12, 15, 20), result);
+        }
+    }
+
+    @Nested
+    @DisplayName("balance tests")
+    class balance{
+        @Test
+        @DisplayName("tree is empty, remains empty")
+        void balance_emptyTree_remainsEmptyAndBalanced() {
+            // Act
+            tree.balance(); 
+            
+            // Assert
+            assertEquals(0, tree.size());
+        }
+    
+        @Test
+        @DisplayName("single node tree remains single and balanced")
+        void balance_singleNodeTree_remainsSingleAndBalanced() {
+            // Arrange
+            tree.insert(10);
+            int initialSize = tree.size();
+    
+            // Act
+            tree.balance();
+            
+            // Assert
+            assertEquals(initialSize, tree.size());
+        }
+    
+        @Test
+        @DisplayName("balance a deeply skewed tree (right) ")
+        void balance_skewedOddTree_becomesBalanced() {
+            tree.insert(10);
+            tree.insert(20);
+            tree.insert(30);
+            tree.insert(40);
+            tree.insert(50); 
+    
+            // Act
+            tree.balance();
+            
+            // Assert
+            assertFalse(tree.render().equals("10(,20(,30(,40(,50))))"));
+            assertTrue(tree.render().equals("30(10(,20),40(,50))"));
+            assertEquals((int) Math.ceil(Math.log(5 + 1) / Math.log(2)), tree.depth());
+        }
+    
+        @Test
+        @DisplayName("balance a deeply skewed tree (left)")
+        void balance_skewedEvenTree_becomesBalanced() {
+            // Arrange: Crea un árbol muy desbalanceado (lista a la izquierda)
+            tree.insert(60);
+            tree.insert(50);
+            tree.insert(40);
+            tree.insert(30);
+            tree.insert(20);
+            tree.insert(10);
+    
+            // Act
+            tree.balance();
+            
+            // Assert
+            assertFalse(tree.render().equals("60(50(40(30(20(10,),),),),)"));
+            assertTrue(tree.render().equals("30(10(,20),50(40,60))"));
+            assertEquals((int) Math.ceil(Math.log(7 + 1) / Math.log(2)), tree.depth());
+        }
+
+        @Test
+        @DisplayName("balance a balanced tree")
+        void balance_balancedTree_remainsBalanced() {
+            // Arrange
+            tree.insert(12);
+            tree.insert(15);
+            tree.insert(13);
+            tree.insert(20);
+            tree.insert(7);
+            tree.insert(5);
+            tree.insert(10);
+            String expected = tree.render();
+    
+            // Act
+            tree.balance();
+            
+            // Assert
+            assertEquals(expected, tree.render());
+            assertEquals((int) Math.ceil(Math.log(7 + 1) / Math.log(2)), tree.depth());
         }
     }
 }

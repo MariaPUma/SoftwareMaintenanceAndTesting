@@ -182,9 +182,9 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
 
     @Override
     public void removeValue(T value) {
-        // if(value!=null || !this.contains(value)){
-        //     throw new BinarySearchTreeException("ERROR: value not valid");
-        // }
+        if(value == null || !this.contains(value)){
+            throw new BinarySearchTreeException("ERROR: value not valid");
+        }
         
         if (comparator.compare(value, this.value) == 0) {
             if (this.isLeaf()) {
@@ -220,7 +220,7 @@ public class BinarySearchTree<T> implements BinarySearchTreeStructure<T> {
         List<T> orderedItems = new ArrayList<>();
          
         if (this.left != null) orderedItems.addAll(this.left.inOrder());
-        orderedItems.add(this.value);
+        if (this.value != null) orderedItems.add(this.value);
         if (this.right != null) orderedItems.addAll(this.right.inOrder());
 
         return orderedItems;
