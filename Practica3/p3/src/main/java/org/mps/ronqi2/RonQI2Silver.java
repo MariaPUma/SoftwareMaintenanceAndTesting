@@ -1,3 +1,11 @@
+//--------------------------------------------------------------------------------
+/* 
+ * INTEGRANTES DEL GRUPO:
+ * - Javier Toledo Delgado
+ * - María Paulina Ordóñez Walkowiak
+ */
+//--------------------------------------------------------------------------------
+
 package org.mps.ronqi2;
 
 import java.util.ArrayList;
