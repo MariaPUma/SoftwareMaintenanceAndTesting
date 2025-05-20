@@ -60,8 +60,6 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
         // CHECK THAT IT IS CREATED
         this.mockMvc.perform(get("/paciente/{id}", p.getId()))
                 .andExpect(status().isOk())
-//                .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.id", is((long)p.getId())))
                 //ID is a long and gives an error even if we initializes with id = 1L
                 .andExpect(jsonPath("$.nombre", is(p.getNombre())))
                 .andExpect(jsonPath("$.edad", is(p.getEdad())))
@@ -165,7 +163,7 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
                         .content(objectMapper.writeValueAsString(medico1)))
                 .andExpect(status().isCreated());
 
-        // Crear médico 2
+        // CREATE MEDICO 2
         Medico medico2 = new Medico();
         medico2.setId(3);
         medico2.setNombre("Dr. López");
@@ -177,7 +175,7 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
                         .content(objectMapper.writeValueAsString(medico2)))
                 .andExpect(status().isCreated());
 
-        // Crear paciente y asociarlo al médico 1
+        // CREATE PACIENTE 1 WITH MEDICO 1
         Paciente paciente = new Paciente();
         paciente.setId(1);
         paciente.setNombre("Juan");
@@ -190,12 +188,12 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
                         .content(objectMapper.writeValueAsString(paciente)))
                 .andExpect(status().isCreated());
 
-        // Verificar que el paciente está asociado al médico 1
+        // CHECK ASSOCIATION WITH MEDICO 1
         this.mockMvc.perform(get("/paciente/{id}", paciente.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.medico.dni", is(medico1.getDni())));
 
-        // Cambiar la asociación del paciente al médico 2
+        // UPDATE ASSOCIATION TO MEDICO 2
         paciente.setMedico(medico2);
 
         this.mockMvc.perform(put("/paciente")
@@ -203,7 +201,7 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
                         .content(objectMapper.writeValueAsString(paciente)))
                 .andExpect(status().isNoContent());
 
-        // Verificar que el paciente ahora está asociado al médico 2
+        // CHECK ASSOCIATION WITH MEDICO 2
         this.mockMvc.perform(get("/paciente/{id}", paciente.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.medico.dni", is(medico2.getDni())));

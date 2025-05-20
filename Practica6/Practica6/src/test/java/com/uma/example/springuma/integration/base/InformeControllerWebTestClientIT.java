@@ -28,13 +28,9 @@ public class InformeControllerWebTestClientIT{
 
     private WebTestClient client;
 
-    private Imagen imagen;
-
     private Paciente p;
 
     private Medico m;
-
-    private Imagen imagen2;
 
     @Autowired
     private ImagenService imagenService;
@@ -44,7 +40,8 @@ public class InformeControllerWebTestClientIT{
         client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port)
                 .responseTimeout(Duration.ofMillis(30000)).build();
 
-        //Medico y Pacientes
+        //Medico and Paciente
+        // Create an object for the use in tests
         m = new Medico();
         m.setId(1);
         m.setDni("12345678H");
@@ -60,39 +57,44 @@ public class InformeControllerWebTestClientIT{
         p.setDni("98765432Z");
     }
 
+    // Solo hemos creado un único test para el camino feliz ya que al ser pruebas de integración
+    // , siguen otro tipo de estructa y por lo tanto nos hemos focalizado en cubrir lo que nos
+    // pedía el enunciado y verificar el correcto funcionamiento de un conjunto de instrucciones.
+    // Hemos seguido la estructura que se nos especifico en las clases prácticas.
+
     @Test
     @DisplayName("Create and delete an Informe successfully")
     void informeController_createAndDeleteInformeSuccessfully() {
-        // 1. Crear un Médico para asociar al Paciente
+        // CREATE MEDICO
         client.post().uri("/medico")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(m), Medico.class)
                 .exchange()
                 .expectStatus().isCreated();
 
-        // 2. Crear un Paciente y asociarlo al Médico recién creado
+        // CREATE PACIENTE WITH MEDICO "m"
         client.post().uri("/paciente")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(p), Paciente.class)
                 .exchange()
                 .expectStatus().isCreated();
 
-        // 3. Preparar la imagen para la subida
+        // Image Preparation
         FileSystemResource imageFile = new FileSystemResource("src/test/resources/healthy.png");
 
-        // 4. Construir el cuerpo multipart
+        // creation MultipartBodyBuilder object
         MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
         bodyBuilder.part("image", imageFile, MediaType.IMAGE_PNG);
         bodyBuilder.part("paciente", p, MediaType.APPLICATION_JSON);
 
-        // 5. Subir la imagen
+        // UPLOAD IMAGE
         client.post().uri("/imagen")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                 .exchange()
                 .expectStatus().isOk();
 
-        // 6. Obtener la imagen subida
+        // GET IMAGE UPLOADED
         Imagen imagenSubida = client.get().uri("/imagen/paciente/" + p.getId())
                 .exchange()
                 .expectStatus().isOk()
@@ -101,7 +103,7 @@ public class InformeControllerWebTestClientIT{
                 .getResponseBody()
                 .get(0);
 
-        // 7. Crear un informe asociado a la imagen
+        // CREATE INFORME
         Informe informe = new Informe("Prediccion positiva", "El paciente muestra signos positivos.", imagenSubida);
         client.post().uri("/informe")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +111,7 @@ public class InformeControllerWebTestClientIT{
                 .exchange()
                 .expectStatus().isCreated();
 
-        // 8. Verificar que el informe se ha creado
+        // CHECK INFORME HAS BEEN CREATED
         Informe informeCreado = client.get().uri("informe/imagen/" + imagenSubida.getId()) // URI corregida (sin / al inicio)
                 .exchange()
                 .expectStatus().isOk()
@@ -121,12 +123,12 @@ public class InformeControllerWebTestClientIT{
         assert informeCreado.getContenido().equals("El paciente muestra signos positivos.");
         assert informeCreado.getImagen().getId() == imagenSubida.getId();
 
-        // 9. Eliminar el informe
+        // REMOVE INFORME
         client.delete().uri("/informe/" + informeCreado.getId())
                 .exchange()
                 .expectStatus().isNoContent();
 
-        // 10. Verificar que el informe ha sido eliminado
+        // CHECKED THAT HAS BEEN DELETED
         client.get().uri("/informe/" + informeCreado.getId())
                 .exchange()
                 .expectStatus().isOk() // Espera 200 OK

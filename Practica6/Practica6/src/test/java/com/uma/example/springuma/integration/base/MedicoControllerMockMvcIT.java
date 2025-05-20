@@ -51,7 +51,6 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration{
         this.mockMvc.perform(get("/medico/dni/{dni}", m.getDni()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.id", is(m.getId())))
                 .andExpect(jsonPath("$.nombre", is(m.getNombre())))
                 .andExpect(jsonPath("$.dni", is(m.getDni())))
                 .andExpect(jsonPath("$.especialidad", is(m.getEspecialidad())));
@@ -118,7 +117,7 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration{
     }
 
 
-//    CRUD TEST UNIFIED
+//    CRUD TEST UNIFIED: This test is for check all the CRUD MEDICO
 //    @Test
 //    @DisplayName("create medico and get it correctly")
 //    void createMedico_isObtainedWithGet() throws Exception {
