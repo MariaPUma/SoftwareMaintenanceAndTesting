@@ -1,29 +1,25 @@
 package com.uma.example.springuma.integration.base;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Calendar;
+import java.util.List;
 
 import com.uma.example.springuma.model.Imagen;
 import com.uma.example.springuma.model.ImagenService;
 import com.uma.example.springuma.model.Medico;
 import com.uma.example.springuma.model.Paciente;
 import jakarta.annotation.PostConstruct;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
 
@@ -34,23 +30,19 @@ public class ImagenControllerWebTestClientIT {
 
     private WebTestClient client;
 
-    private Imagen imagen;
-
     private Paciente p;
 
     private Medico m;
-
-    private Imagen imagen2;
 
     @Autowired
     private ImagenService imagenService;
 
     @PostConstruct
     public void init() throws IOException {
-        client = WebTestClient.bindToServer().baseUrl("http://localhost:"+port)
+        client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port)
                 .responseTimeout(Duration.ofMillis(30000)).build();
 
-        //Medico, Pacientes e Imágenes
+        //Medico y Pacientes
         m = new Medico();
         m.setId(1);
         m.setDni("12345678H");
@@ -64,110 +56,109 @@ public class ImagenControllerWebTestClientIT {
         p.setNombre("Juan");
         p.setEdad(45);
         p.setDni("98765432Z");
-
-
-//        // Cargar archivo desde resources
-//        ClassPathResource resource = new ClassPathResource("src/test/resources/healthty.png");
-//        MockMultipartFile file = new MockMultipartFile(
-//                "imageHealthy",
-//                resource.getFilename(),
-//                "image/png",
-//                resource.getInputStream()
-//        );
-//
-//
-//        imagen = new Imagen();
-//        imagen.setId(1L);
-//        imagen.setNombre(file.getOriginalFilename());
-//        imagen.setPaciente(p);
-//        imagen.setFecha(Calendar.getInstance());
-//        imagen.setFile_content(file.getBytes());
-//
-//        ClassPathResource resource_2 = new ClassPathResource("src/test/resources/no_healthty.png");
-//
-//        MockMultipartFile file_2 = new MockMultipartFile(
-//                "imageNoHealthty",
-//                resource_2.getFilename(),
-//                "image/png",
-//                resource_2.getInputStream()
-//        );
-//
-//        imagen2 = new Imagen();
-//        imagen2.setId(2L);
-//        imagen2.setNombre(file_2.getOriginalFilename());
-//        imagen2.setPaciente(p);
-//        imagen2.setFecha(Calendar.getInstance());
-//        imagen2.setFile_content(file_2.getBytes());
     }
 
-//    @Test
-//    @DisplayName("upload image from patient correctly")
-//    void uploadImage_uploadsCorrectly(){
-//        // Crear archivo de prueba desde resources
-//        File uploadFile = new File("./src/test/resources/healthy.png");
-//
-//        // Crear paciente
-//        client.post().uri("/paciente")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(Mono.just(p), Paciente.class)
-//                .exchange()
-//                .expectStatus().isCreated();
-//
-//        // Construir la solicitud multipart para subir la imagen
-//        MultipartBodyBuilder builder = new MultipartBodyBuilder();
-//        builder.part("image", new FileSystemResource(uploadFile));
-//        builder.part("paciente", p);
-//
-//        // Subir la imagen asociada al paciente
-//        client.post().uri("/imagen")
-//                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .body(BodyInserters.fromMultipartData(builder.build()))
-//                .exchange()
-//                .expectStatus().isOk();
-//
-//        // Verificar que la imagen fue subida y asociada al paciente
-//
-//    }
-@Test
-@DisplayName("Subir imagen asociada a un paciente correctamente")
-void uploadImage_uploadsCorrectly() {
-    // Crear archivo de prueba desde resources
-    File uploadFile = new File("./src/test/resources/healthy.png");
-    if (!uploadFile.exists()) {
-        throw new RuntimeException("El archivo healthy.png no existe en la ruta especificada.");
+    @Test
+    @DisplayName("Subir imagen asociada a un paciente correctamente")
+    void uploadImage_uploadsCorrectly() {
+        // 1. Crear un Médico para asociar al Paciente
+        client.post().uri("/medico")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(m), Medico.class)
+                .exchange()
+                .expectStatus().isCreated();
+
+        //comprobar que el medico se ha creado
+        client.get().uri("/medico/" + m.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Medico.class);
+
+        // 2. Crear un Paciente y asociarlo al Médico recién creado
+        client.post().uri("/paciente")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(p), Paciente.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(Paciente.class);
+
+        // 3. Preparar la imagen para la subida
+        FileSystemResource imageFile = new FileSystemResource("src/test/resources/healthy.png");
+
+        // 4. Construir el cuerpo multipart
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("image", imageFile, MediaType.IMAGE_PNG);
+        bodyBuilder.part("paciente", p, MediaType.APPLICATION_JSON);
+
+        // 5. Realizar la petición POST para subir la imagen
+        client.post().uri("/imagen")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .exchange()
+                .expectStatus().isOk();
+
+        //comprobar que la imagen se ha subido y que el paciente asociado es correcto
+        client.get().uri("/imagen/paciente/" + p.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Imagen.class)
+                .consumeWith(response -> {
+                    List<Imagen> imagenes = response.getResponseBody();
+                    assert imagenes != null && !imagenes.isEmpty();
+                    Imagen imagenSubida = imagenes.get(0);
+                    assert imagenSubida.getPaciente().getId() == p.getId();
+                });
     }
 
+    @Test
+    @DisplayName("Realizar predicción de una imagen de un paciente correctamente")
+    void predictImage_returnsPredictionSuccessfully() {
+        // 1. Crear un Médico para asociar al Paciente
+        client.post().uri("/medico")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(m), Medico.class)
+                .exchange()
+                .expectStatus().isCreated();
 
+        // 2. Crear un Paciente y asociarlo al Médico recién creado
+        client.post().uri("/paciente")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(p), Paciente.class)
+                .exchange()
+                .expectStatus().isCreated();
 
-    // Crear paciente
-    client.post().uri("/paciente")
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(Mono.just(p), Paciente.class)
-            .exchange()
-            .expectStatus().isCreated();
+        // 3. Preparar la imagen para la subida
+        FileSystemResource imageFile = new FileSystemResource("src/test/resources/healthy.png");
 
-    // Construir la solicitud multipart para subir la imagen
-    MultipartBodyBuilder builder = new MultipartBodyBuilder();
-    builder.part("image", new FileSystemResource(uploadFile));
-    builder.part("paciente", p);
+        // 4. Construir el cuerpo multipart
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("image", imageFile, MediaType.IMAGE_PNG);
+        bodyBuilder.part("paciente", p, MediaType.APPLICATION_JSON);
 
-    // Subir la imagen asociada al paciente
-    client.post().uri("/imagen")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .body(BodyInserters.fromMultipartData(builder.build()))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.response").isEqualTo("file uploaded successfully : healthy.png");
+        // 5. Subir la imagen
+        client.post().uri("/imagen")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .exchange()
+                .expectStatus().isOk();
 
-    // Verificar que la imagen fue subida y asociada al paciente
-    client.get().uri("/imagen/paciente/{id}", p.getId())
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$[0].nombre").isEqualTo("healthy.png")
-            .jsonPath("$[0].paciente.id").isEqualTo(p.getId());
-}
+        // 6. Obtener la imagen subida
+        Imagen imagenSubida = client.get().uri("/imagen/paciente/" + p.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Imagen.class)
+                .returnResult()
+                .getResponseBody()
+                .get(0);
 
-
+        // 7. Realizar la predicción de la imagen
+        client.get().uri("/imagen/predict/" + imagenSubida.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    String prediction = response.getResponseBody();
+                    assert prediction != null;
+                    assert prediction.contains("'status': 'Not cancer'") || prediction.contains("'status': 'Cancer'");                });
+    }
 }
