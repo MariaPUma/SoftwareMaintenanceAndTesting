@@ -16,3 +16,6 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 .DS_Store
+/Practica6-7/Practica6/.idea
+*.DS_Store
+/Practica8/P7/.idea
